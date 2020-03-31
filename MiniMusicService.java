@@ -2,54 +2,54 @@ import javax.sound.midi.*;
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
-public class MiniMusicPlayer
+public class MiniMusicService implements Service
 {
-    static JFrame f = new JFrame("Mt First Music Video");
-    static MyDrawPanel ml;
+    MyDrawPanel myPanel;
 
-    public static void main(String[] args)
+    public JPanel getGuiPanel()
     {
-        MiniMusicPlayer mini = new MiniMusicPlayer();
-        mini.go();
+        JPanel mainPanel = new JPanel();
+        myPanel = new MyDrawPanel();
+        JButton playItButton = new JButton("Play It!");
+        playItButton.addActionListener(new PlayItListener());
+        mainPanel.add(myPanel);
+        mainPanel.add(playItButton);
+        return mainPanel;
     }
 
-    public void setUpGui()
+    public class PlayItListener implements ActionListener
     {
-        ml = new MyDrawPanel();
-        f.setContentPane(ml);
-        f.setBounds(30,30,300,300);
-        f.setVisible(true);
-    }
-
-    public void go()
-    {
-        setUpGui();
-        try
+        public void actionPerformed(ActionEvent ev)
         {
-            Sequencer sequencer = MidiSystem.getSequencer();
-            sequencer.open();
-            sequencer.addControllerEventListener(ml, new int[] {127});
-            
-            Sequence seq = new Sequence(Sequence.PPQ, 4);
-            Track track = seq.createTrack();
-
-            int r =0;
-            for(int i=0; i<60; i+=4)
+            try
             {
-                r=(int)((Math.random()*50)+1);
-                track.add(makeEvent(144,1,r,100,i));
-                track.add(makeEvent(176,1,127,0,i));
-                track.add(makeEvent(128,1,r,100,i+2));
+                Sequencer sequencer = MidiSystem.getSequencer();
+                sequencer.open();
+                sequencer.addControllerEventListener(myPanel, new int[] {127});
+                
+                Sequence seq = new Sequence(Sequence.PPQ, 4);
+                Track track = seq.createTrack();
+
+                int r =0;
+                for(int i=0; i<60; i+=4)
+                {
+                    r=(int)((Math.random()*50)+1);
+                    track.add(makeEvent(144,1,r,100,i));
+                    track.add(makeEvent(176,1,127,0,i));
+                    track.add(makeEvent(128,1,r,100,i+2));
+                }
+                sequencer.setSequence(seq);
+                sequencer.start();
+                sequencer.setTempoInBPM(120);
             }
-            sequencer.setSequence(seq);
-            sequencer.start();
-            sequencer.setTempoInBPM(120);
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        
     }
     public MidiEvent makeEvent(int comd, int chan, int one, int two, int tick)
     {
