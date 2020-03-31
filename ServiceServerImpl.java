@@ -4,7 +4,12 @@ import java.rmi.server.*;
 
 public class ServiceServerImpl extends UnicastRemoteObject implements ServiceServer
 {
-    HashMap serviceList;
+    /**
+     *
+     */
+
+    private static final long serialVersionUID = 1L;
+    HashMap<String,Object> serviceList;
 
     public ServiceServerImpl() throws RemoteException
     {
@@ -13,7 +18,7 @@ public class ServiceServerImpl extends UnicastRemoteObject implements ServiceSer
 
     private void setUpServices() 
     {
-        serviceList = new HashMap<>();
+        serviceList = new HashMap<String,Object>();
         serviceList.put("Dice Rolling Service", new DiceService());
         serviceList.put("Day of the Week Service", new DayOfTheWeekService());    
         serviceList.put("Visual Music Service", new MiniMusicService());

@@ -6,7 +6,7 @@ import java.awt.event.*;
 public class ServiceBrowser
 {
     JPanel mainPanel;
-    JComboBox serviceList;
+    JComboBox<Object> serviceList;
     ServiceServer server;
 
     public void buildGUI() 
@@ -17,7 +17,7 @@ public class ServiceBrowser
         
         Object[] services = getServiceList();
 
-        serviceList = new JComboBox<>(services);
+        serviceList = new JComboBox<Object>(services);
 
         frame.getContentPane().add(BorderLayout.NORTH, serviceList);
 
@@ -58,8 +58,10 @@ public class ServiceBrowser
         server = (ServiceServer) obj;
         try 
         {
-            services = server.getServiceList()
-        } catch (Exception e) {
+            services = server.getServiceList();
+        } 
+        catch (Exception e) 
+        {
             e.printStackTrace();
         }
         return services;
